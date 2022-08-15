@@ -4,7 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
-    "path/filepath"
+	"path/filepath"
+	"time"
 )
 
 var pathToReport = flag.String("report", "", "Path to the JSON report `file` produced by Telegram export feature")
@@ -31,16 +32,26 @@ func main() {
         os.Exit(1)
     }
 
-    fmt.Printf("Person: %s\n\nChat:\n", report.Name)
+    fmt.Printf("# Chat with %s\n\nChat:\n", report.Name)
     fromMsg := len(report.Messages) - 100
     if fromMsg < 0 {
         fromMsg = 0
     }
+
+    var lastDate time.Time
     for i := 0; i < len(report.Messages); i++ {
         if i == len(report.Messages) {
             break
         }
 
-        fmt.Printf("%s: %s\n\n", report.Messages[i].From, report.Messages[i].Text.String())
+        date := time.Unix(report.Messages[i].DateUnix, 0)
+        if date.Day() != lastDate.Day() {
+            fmt.Printf("## %s\n\n", date.Format("January _2, 2006"))
+        }
+
+        lastDate = date
+        timestamp := date.Format("15:04")
+        datestamp := date.Format("01/02")
+        fmt.Printf("**%s %s %s:** %s\n\n", timestamp, datestamp, report.Messages[i].From, report.Messages[i].Text.String())
     }
 }
