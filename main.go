@@ -32,11 +32,15 @@ func main() {
     }
 
     fmt.Printf("Person: %s\n\nChat:\n", report.Name)
-    for i := 0; i < 20; i++ {
+    fromMsg := len(report.Messages) - 100
+    if fromMsg < 0 {
+        fromMsg = 0
+    }
+    for i := 0; i < len(report.Messages); i++ {
         if i == len(report.Messages) {
             break
         }
 
-        fmt.Printf("%s: %s\n", report.Messages[i].From, report.Messages[i].Text[0].Text)
+        fmt.Printf("%s: %s\n\n", report.Messages[i].From, report.Messages[i].Text.String())
     }
 }
