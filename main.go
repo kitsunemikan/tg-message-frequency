@@ -25,5 +25,18 @@ func main() {
         os.Exit(1)
     }
 
-    fmt.Println("OK")
+    report, err := loadReport(*pathToReport)
+    if err != nil {
+        fmt.Printf("error: load report %q: %v\n", *pathToReport, err)
+        os.Exit(1)
+    }
+
+    fmt.Printf("Person: %s\n\nChat:\n", report.Name)
+    for i := 0; i < 20; i++ {
+        if i == len(report.Messages) {
+            break
+        }
+
+        fmt.Printf("%s: %s\n", report.Messages[i].From, report.Messages[i].Text[0].Text)
+    }
 }
